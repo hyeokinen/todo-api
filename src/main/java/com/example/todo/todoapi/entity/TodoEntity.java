@@ -24,6 +24,7 @@ public class TodoEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    // uuid전략으로 자동 생성됨
     private String todoId;
 
     @Column(nullable = false, length = 30)
