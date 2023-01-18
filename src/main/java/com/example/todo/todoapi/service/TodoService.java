@@ -42,6 +42,7 @@ public class TodoService {
     // 할 일 등록
     // 클라이언트가 던진 데이터를 DB에 넣는 역할이다.
     public TodoListResponseDTO create(final TodoCreateRequestDTO createRequestDTO){
+
         todoRepository.save(createRequestDTO.todoEntity());
         log.info("할 일이 저장되었습니다. 제목 : {}", createRequestDTO.getTitle());
         return retrieve();
