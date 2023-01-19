@@ -1,8 +1,8 @@
 package com.example.todo.todoapi.controller;
 
 import com.example.todo.todoapi.dto.request.TodoCreateRequestDTO;
+import com.example.todo.todoapi.dto.request.TodoModifyRequestDTO;
 import com.example.todo.todoapi.dto.response.TodoListResponseDTO;
-import com.example.todo.todoapi.repository.TodoRepository;
 import com.example.todo.todoapi.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +11,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/todos")
 public class TodoApiController {
-    private final TodoRepository todoRepository;
 
     private final TodoService todoService;
 
@@ -48,6 +47,7 @@ public class TodoApiController {
         }
 
     }
+
     // 할 일 삭제 요청
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTodo(
@@ -55,7 +55,7 @@ public class TodoApiController {
     ) {
         log.info("/api/todos/{} DELETE request!", todoId);
 
-        if (todoId == null || todoId.equals("")) {
+        if (todoId == null || todoId.trim().equals("")) {
             return ResponseEntity
                     .badRequest()
                     .body(TodoListResponseDTO.builder().error("ID를 전달해주세요"));
@@ -72,11 +72,41 @@ public class TodoApiController {
 
     // 할 일 목록요청 (GET)
     @GetMapping
+    public ResponseEntity<?> retrieveTodoList() {
+        log.info("/api/todos GET request!");
 
+        TodoListResponseDTO responseDTO = todoService.retrieve();
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
     // 할 일 수정요청 (PUT, PATCH)
-    @PutMapping{"/{id}"}
+    @RequestMapping(
+            value = "/{id}"
+            , method = {RequestMethod.PUT, RequestMethod.PATCH}
+    )
+    public ResponseEntity<?> updateTodo(
+            @PathVariable("id") String todoId
+            , @Validated @RequestBody TodoModifyRequestDTO requestDTO
+            , BindingResult result
+            , HttpServletRequest request
+    ) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(result.getFieldError());
+        }
 
+        log.info("/api/todos/{} {} request", todoId, request.getMethod());
+        log.info("modifying dto : {}", requestDTO);
+
+        try {
+            TodoListResponseDTO responseDTO = todoService.update(todoId, requestDTO);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(TodoListResponseDTO.builder().error(e.getMessage()));
+        }
+    }
 
 }
 
