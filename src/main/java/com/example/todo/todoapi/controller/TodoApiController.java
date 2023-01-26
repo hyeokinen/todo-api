@@ -80,6 +80,7 @@ public class TodoApiController {
         TodoListResponseDTO responseDTO = todoService.retrieve();
 
         return ResponseEntity.ok().body(responseDTO);
+
     }
 
     // 할 일 수정요청 (PUT, PATCH)
