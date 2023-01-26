@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/todos")
+// CORS 허용 설정
+@CrossOrigin
 public class TodoApiController {
 
     private final TodoService todoService;
