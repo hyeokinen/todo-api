@@ -18,25 +18,29 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tbl_todo")
-
 public class TodoEntity {
 
-    // pk가 랜덤 문자열로 지정된다. 즉 절대 중복이 안나오는 방식중에 하나이다.
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    // uuid전략으로 자동 생성됨
     private String todoId;
 
     @Column(nullable = false, length = 30)
     private String title; // 제목
+
     private boolean done; // 일정 완료 여부
 
     @CreationTimestamp
-    private LocalDateTime createDate; // 등록시간
+    private LocalDateTime createDate; // 등록 시간
 
     // 회원과 관계 설정
-    @ManyToOne(fetch = FetchType.LAZY) // 다대일 내가 주인공
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    // 연관관계 설정은 했지만 INSERT, UPDATE시에는 이 객체를 활용하지 않겠다.
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;
+
+    // 할 일 추가, 수정시 사용할 외래키
+    @Column(name = "user_id")
+    private String userId;
+
 }
