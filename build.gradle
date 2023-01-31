@@ -5,6 +5,7 @@ plugins {
 	id 'war'
 }
 
+
 war {
 	archiveName 'ROOT.war'
 }
