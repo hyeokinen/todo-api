@@ -5,12 +5,12 @@ plugins {
 	id 'war'
 }
 
-war {
-	archiveName 'ROOT.war'
-}
-
-bootWar.enabled = false  // 내장 was를 비활성화
-war.enabled = true
+//war {
+//	archiveName 'ROOT.war'
+//}
+//
+//bootWar.enabled = false  // 내장 was를 비활성화
+//war.enabled = true
 
 
 group = 'com.example'
